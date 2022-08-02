@@ -8,12 +8,20 @@ type CartProps = {
   totalAmount: number,
   lineItems: LineItem[],
   onUpdateQuantity: (id: string) => void,
+  onDecreaseQuantity: (id: string) => void,
   onRemoveItem: (id: string) => void,
   onRemoveCart: () => void,
 };
 
 const Cart: React.FC<CartProps> = (props) => {
-  const { totalAmount, lineItems, onUpdateQuantity, onRemoveItem, onRemoveCart } = props;
+  const {
+    totalAmount,
+    lineItems,
+    onUpdateQuantity,
+    onRemoveItem,
+    onRemoveCart,
+    onDecreaseQuantity,
+  } = props;
 
   return (
     <section data-name="Cart">
@@ -33,6 +41,7 @@ const Cart: React.FC<CartProps> = (props) => {
             price={data.price}
             quantity={data.quantity}
             onUpdateQuantity={onUpdateQuantity}
+            onDecreaseQuantity={onDecreaseQuantity}
             onRemoveItem={onRemoveItem}
           />
         );

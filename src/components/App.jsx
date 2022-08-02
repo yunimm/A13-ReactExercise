@@ -12,7 +12,6 @@ const ShoppingCart = () => {
    * @type {[LineItem[], Function]}
    */
   const [lineItems, setLineItems] = React.useState([]);
-
   // TODO 6
   React.useEffect(() => {
     const calcTotalAmount = lineItems.reduce((total, currentItem) => {
@@ -38,7 +37,22 @@ const ShoppingCart = () => {
       });
     });
   }, []);
-
+  const atDecreaseQuantity = useCallback((id: string) => {
+    // 增加數量
+    setLineItems((prev) => {
+      return prev.map((item: LineItem) => {
+        if (item.id === id && item.quantity >= 1) {
+          return {
+            id: item.id,
+            title: item.title,
+            price: item.price,
+            quantity: item.quantity - 1,
+          };
+        }
+        return item;
+      });
+    });
+  }, []);
   // TODO 5
   const atAddToCart = useCallback(
     (id: string) => {
@@ -77,7 +91,7 @@ const ShoppingCart = () => {
     console.log('coupon', coupon);
   }, []);
   */
-
+  // console.log(atDecQuantity);
   return (
     <div className="container">
       <div className="row">
@@ -103,6 +117,7 @@ const ShoppingCart = () => {
         lineItems={lineItems}
         onRemoveCart={onRemoveCart}
         onUpdateQuantity={atUpdateQuantity}
+        onDecreaseQuantity={atDecreaseQuantity}
         onRemoveItem={onRemoveItem}
       />
       {/* FIXME 請實作 coupon 功能 */}
