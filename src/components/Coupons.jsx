@@ -14,7 +14,7 @@ const Coupons: React.FC<CouponsProps> = (props) => {
             key={coupon.id}
             className="btn btn-info"
             onClick={() => {
-              onApplyCoupon(coupon);
+              onApplyCoupon(coupon.discount);
             }}
           >
             {coupon.id}

@@ -143,12 +143,16 @@ const ShoppingCart = () => {
   }, []);
 
   // FIXME 請實作 coupon
-  /*
-  const atApplyCoupon = useCallback((coupon) => {
-    console.log('coupon', coupon);
-  }, []);
-  */
-  // console.log(atDecQuantity);
+  const atApplyCoupon = useCallback(
+    (discount: number) => {
+      const calcTotalAmount = lineItems.reduce((total, currentItem) => {
+        return total + currentItem.price * currentItem.quantity;
+      }, 0);
+      setTotalAmount(calcTotalAmount - discount);
+    },
+    [lineItems],
+  );
+
   return (
     <div className="container">
       <div className="row">
@@ -176,7 +180,7 @@ const ShoppingCart = () => {
         onRemoveItem={onRemoveItem}
       />
       {/* FIXME 請實作 coupon 功能 */}
-      {/* <Coupons onApplyCoupon={atApplyCoupon} />} */}
+      <Coupons onApplyCoupon={atApplyCoupon} />
     </div>
   );
 };
