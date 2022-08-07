@@ -33,7 +33,7 @@ const ShoppingCart = () => {
   const atDecreaseInventory = useCallback((id: string) => {
     // 減少架上商品庫存量
     setProducts((prev) => {
-      return prev.map((item: products) => {
+      return prev.map((item: Product) => {
         if (item.id === id) {
           return {
             id: item.id,
@@ -69,7 +69,7 @@ const ShoppingCart = () => {
   const atUpdateQuantity = useCallback((id: string) => {
     // 使用更新購物車商品資料function，以map方式對陣列資料進行加工並回傳新陣列
     setLineItems((prev) => {
-      return prev.map((item: LineItem) => {
+      return prev.map((item) => {
         if (item.id === id) {
           atDecreaseInventory(id);
           return {

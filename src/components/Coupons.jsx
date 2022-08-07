@@ -2,7 +2,7 @@ import React from 'react';
 import { coupons } from './config';
 
 type CouponsProps = {
-  onApplyCoupon: (coupon: string) => void,
+  onApplyCoupon: (coupon: number) => void,
 };
 const Coupons: React.FC<CouponsProps> = (props) => {
   const { onApplyCoupon } = props;
