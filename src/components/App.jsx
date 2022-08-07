@@ -30,8 +30,26 @@ const ShoppingCart = () => {
     setTotalAmount(calcTotalAmount);
   }, [lineItems]);
 
-  const atDecreaseInventory = useCallback((id: string) => {
-    // 減少架上商品庫存量
+  // TODO 5 增加數量
+  const atUpdateQuantity = useCallback((id: string) => {
+    const foundProduct = products.find((item) => item.id === id);
+    // 檢查它的庫存量，如果是 0 的話就結束這個函示，不用再往下執行
+    if (!foundProduct.inventory) return;
+    setLineItems((prev) => {
+      return prev.map((item) => {
+        if (item.id === id) {
+          return {
+            id: item.id,
+            title: item.title,
+            price: item.price,
+            inventory: item.inventory,
+            quantity: item.quantity + 1,
+          };
+        }
+        return item;
+      });
+    });
+
     setProducts((prev) => {
       return prev.map((item: Product) => {
         if (item.id === id) {
@@ -40,15 +58,36 @@ const ShoppingCart = () => {
             img: item.img,
             title: item.title,
             price: item.price,
-            inventory: item.inventory > 0 ? item.inventory - 1 : item.inventory,
+            quantity: item.quantity,
+            inventory: item.inventory - 1,
           };
         }
         return item;
       });
     });
   }, []);
-  const atIncreaseInventory = useCallback((id: string) => {
-    // 增加架上商品庫存量
+  // 減少數量
+  const atDecreaseQuantity = useCallback((id: string) => {
+    // 先比對 id 找出要更新的那一筆
+    const foundProduct = products.find((item) => item.id === id);
+    // 檢查它的庫存量，如果是 0 的話就結束這個函示，不用再往下執行
+    if (!foundProduct.inventory) return;
+    // 執行 setLineItems，這樣的話 lineItems 被更新了，就會觸發 計算總金額，畫面上的總金額就會一起更新
+    setLineItems((prev) => {
+      return prev.map((item: LineItem) => {
+        if (item.id === id) {
+          return {
+            id: item.id,
+            title: item.title,
+            price: item.price,
+            inventory: item.inventory,
+            quantity: item.quantity - 1,
+          };
+        }
+        return item;
+      });
+    });
+    // 執行 setProducts，這樣的話 products 被更新了，就會觸發新的 render
     setProducts((prev) => {
       return prev.map((item: Product) => {
         if (item.id === id) {
@@ -58,45 +97,6 @@ const ShoppingCart = () => {
             title: item.title,
             price: item.price,
             inventory: item.inventory + 1,
-          };
-        }
-        return item;
-      });
-    });
-  }, []);
-
-  // TODO 5增加數量
-  const atUpdateQuantity = useCallback((id: string) => {
-    // 使用更新購物車商品資料function，以map方式對陣列資料進行加工並回傳新陣列
-    setLineItems((prev) => {
-      return prev.map((item) => {
-        if (item.id === id) {
-          atDecreaseInventory(id);
-          return {
-            id: item.id,
-            title: item.title,
-            price: item.price,
-            inventory: item.inventory,
-            quantity: item.quantity < item.inventory ? item.quantity + 1 : item.quantity,
-          };
-        }
-        return item;
-      });
-    });
-  }, []);
-  // 減少數量
-  const atDecreaseQuantity = useCallback((id: string) => {
-    // 使用更新購物車商品資料function，以map方式對陣列資料進行加工並回傳新陣列
-    setLineItems((prev) => {
-      return prev.map((item: LineItem) => {
-        if (item.id === id) {
-          atIncreaseInventory(id);
-          return {
-            id: item.id,
-            title: item.title,
-            price: item.price,
-            inventory: item.inventory,
-            quantity: item.quantity > 0 ? item.quantity - 1 : item.quantity,
           };
         }
         return item;
@@ -124,7 +124,20 @@ const ShoppingCart = () => {
           quantity: 1,
         };
         setLineItems((prev) => prev.concat(lineItem));
-        atDecreaseInventory(id);
+        setProducts((prev) => {
+          return prev.map((item: Product) => {
+            if (item.id === id) {
+              return {
+                id: item.id,
+                img: item.img,
+                title: item.title,
+                price: item.price,
+                inventory: item.inventory > 0 ? item.inventory - 1 : item.inventory,
+              };
+            }
+            return item;
+          });
+        });
       }
     },
     [atUpdateQuantity, lineItems],
